@@ -1,0 +1,510 @@
+{% extends 'base.html' %}
+
+{% block content %}
+{% csrf_token %}
+<div class="row">
+    <div class="col-md-12 mb-4">
+        <div class="card">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h2 class="card-title text-white">{{ trip.destination }} Trip</h2>
+                        {% if trip.user != user %}
+                            <small class="text-light">Posted by {{ trip.user.email }}</small>
+                        {% endif %}
+                    </div>
+                    {% if trip.user == user %}
+                    <div class="d-flex gap-2">
+                        {% if not trip.is_saved %}
+                            <button class="btn btn-gradient" onclick="saveTrip()">Save Trip</button>
+                        {% else %}
+                            <span class="badge bg-success">Saved</span>
+                        {% endif %}
+                        {% if not trip.is_posted %}
+                            <button class="btn btn-gradient-secondary" onclick="postTrip()">Post Trip</button>
+                        {% else %}
+                            <span class="badge bg-info">Posted</span>
+                        {% endif %}
+                    </div>
+                    {% endif %}
+                </div>
+                <div class="row mt-4">
+                    <div class="col-md-6">
+                        <p><strong class="text-light">Start Location:</strong> <span class="text-white">{{ trip.start_location }}</span></p>
+                        <p><strong class="text-light">Start Date:</strong> <span class="text-white">{{ trip.start_date }}</span></p>
+                        <p><strong class="text-light">Trip Type:</strong> <span class="text-white">{{ trip.get_trip_type_display }}</span></p>
+                    </div>
+                    <div class="col-md-6">
+                        <p><strong class="text-light">Destination:</strong> <span class="text-white">{{ trip.destination }}</span></p>
+                        <p><strong class="text-light">End Date:</strong> <span class="text-white">{{ trip.end_date }}</span></p>
+                        <p><strong class="text-light">Number of People:</strong> <span class="text-white">{{ trip.number_of_people }}</span></p>
+                    </div>
+                </div>
+                <div class="mt-4">
+                    <p><strong class="text-light">Interested Activities:</strong></p>
+                    <p class="text-white">{{ trip.interested_activities }}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {% for day, activities in trip.trip_plan.items %}
+    <div class="col-md-12 mb-4">
+        <div class="card">
+            <div class="card-body">
+                <h3 class="card-title text-white mb-4">Day {{ day|slice:"4:" }}</h3>
+                
+                <div class="mb-4">
+                    <h4 class="text-gradient">Morning</h4>
+                    <div class="main-activity mb-3">
+                        <strong class="text-light">Main Activity:</strong> <span class="text-white">{{ activities.morning.main }}</span>
+                    </div>
+                    <div class="alternatives">
+                        <strong class="text-light">Alternatives:</strong>
+                        <ul class="text-white">
+                            {% for alt in activities.morning.alternatives %}
+                                <li>{{ alt }}</li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="mb-4">
+                    <h4 class="text-gradient">Afternoon</h4>
+                    <div class="main-activity mb-3">
+                        <strong class="text-light">Main Activity:</strong> <span class="text-white">{{ activities.afternoon.main }}</span>
+                    </div>
+                    <div class="alternatives">
+                        <strong class="text-light">Alternatives:</strong>
+                        <ul class="text-white">
+                            {% for alt in activities.afternoon.alternatives %}
+                                <li>{{ alt }}</li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="mb-4">
+                    <h4 class="text-gradient">Evening</h4>
+                    <div class="main-activity mb-3">
+                        <strong class="text-light">Main Activity:</strong> <span class="text-white">{{ activities.evening.main }}</span>
+                    </div>
+                    <div class="alternatives">
+                        <strong class="text-light">Alternatives:</strong>
+                        <ul class="text-white">
+                            {% for alt in activities.evening.alternatives %}
+                                <li>{{ alt }}</li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="mb-4">
+                    <h4 class="text-gradient">Recommended Restaurants</h4>
+                    <ul class="text-white">
+                        {% for restaurant in activities.food %}
+                            <li>{{ restaurant }}</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+
+                <div>
+                    <h4 class="text-gradient">Tips & Notes</h4>
+                    <p class="text-white">{{ activities.tips }}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+
+    {% if trip.is_posted %}
+    <div class="col-md-12 mb-4">
+        <div class="card">
+            <div class="card-body">
+                <h3 class="text-white mb-4">Ratings & Reviews</h3>
+                <div class="mb-4">
+                    <div class="d-flex align-items-center mb-2">
+                        <div class="rating-stars me-2">
+                            {% with ''|center:trip.average_rating|make_list as stars %}
+                            {% for _ in stars %}
+                                <i class="fas fa-star text-warning"></i>
+                            {% endfor %}
+                            {% endwith %}
+                            {% with ''|center:5|make_list as remaining %}
+                            {% for _ in remaining|slice:trip.average_rating %}
+                                <i class="far fa-star text-warning"></i>
+                            {% endfor %}
+                            {% endwith %}
+                        </div>
+                        <span class="text-light" id="rating-stats">({{ trip.total_ratings }} ratings)</span>
+                    </div>
+                </div>
+
+                {% if user != trip.user %}
+                <div class="mb-4">
+                    <h4 class="text-white">Rate this Trip</h4>
+                    <form id="rating-form" class="mb-3">
+                        <div class="rating-input mb-3">
+                            <div class="btn-group" role="group">
+                                {% for i in "12345" %}
+                                <input type="radio" class="btn-check" name="rating" id="rating{{ i }}" value="{{ i }}" autocomplete="off">
+                                <label class="btn btn-outline-light" for="rating{{ i }}">{{ i }} ★</label>
+                                {% endfor %}
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <textarea class="form-control" id="comment" name="comment" rows="3" placeholder="Write your review (optional)"></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-gradient">Submit Rating</button>
+                    </form>
+                </div>
+                {% endif %}
+
+                <div id="ratings-list">
+                    <!-- Ratings will be loaded here -->
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+</div>
+
+<style>
+    .card {
+        background: rgba(255, 255, 255, 0.1);
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        margin-bottom: 1rem;
+    }
+
+    .card-title {
+        font-weight: 600;
+        letter-spacing: 0.5px;
+    }
+
+    .text-gradient {
+        background: linear-gradient(45deg, #652D90, #9b4ed4);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        font-weight: 500;
+        margin-bottom: 1rem;
+    }
+
+    .btn-gradient {
+        background: linear-gradient(45deg, #652D90, #9b4ed4);
+        border: none;
+        color: white;
+        padding: 0.5rem 1.5rem;
+        font-weight: 500;
+        transition: all 0.3s ease;
+    }
+
+    .btn-gradient:hover {
+        background: linear-gradient(45deg, #4a2169, #8339c7);
+        transform: translateY(-2px);
+        color: white;
+        box-shadow: 0 4px 15px rgba(101, 45, 144, 0.3);
+    }
+
+    .btn-gradient-secondary {
+        background: linear-gradient(45deg, #4a4a4a, #6d6d6d);
+        border: none;
+        color: white;
+        padding: 0.5rem 1.5rem;
+        font-weight: 500;
+        transition: all 0.3s ease;
+    }
+
+    .btn-gradient-secondary:hover {
+        background: linear-gradient(45deg, #3d3d3d, #565656);
+        transform: translateY(-2px);
+        color: white;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    }
+
+    .text-light {
+        color: rgba(255, 255, 255, 0.8) !important;
+    }
+
+    .text-white {
+        color: white !important;
+    }
+
+    .badge {
+        padding: 0.5rem 1rem;
+        font-weight: 500;
+        letter-spacing: 0.5px;
+    }
+
+    .rating-stars {
+        font-size: 1.2rem;
+    }
+
+    .btn-outline-light {
+        border-color: rgba(255, 255, 255, 0.5);
+        color: white;
+    }
+
+    .btn-outline-light:hover {
+        background-color: rgba(255, 255, 255, 0.1);
+        border-color: white;
+        color: white;
+    }
+
+    .form-control {
+        background: rgba(255, 255, 255, 0.1);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        color: white;
+    }
+
+    .form-control:focus {
+        background: rgba(255, 255, 255, 0.15);
+        border-color: #652D90;
+        color: white;
+        box-shadow: 0 0 0 0.25rem rgba(101, 45, 144, 0.25);
+    }
+
+    .form-control::placeholder {
+        color: rgba(255, 255, 255, 0.5);
+    }
+
+    ul {
+        padding-left: 1.5rem;
+    }
+
+    li {
+        margin-bottom: 0.5rem;
+    }
+</style>
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://kit.fontawesome.com/your-font-awesome-kit.js"></script>
+<script>
+    function getCookie(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            const cookies = document.cookie.split(';');
+            for (let i = 0; i < cookies.length; i++) {
+                const cookie = cookies[i].trim();
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+
+    function saveTrip() {
+        const csrftoken = getCookie('csrftoken');
+        
+        fetch('{% url "trips:save_trip" trip.id %}', {
+            method: 'POST',
+            headers: {
+                'X-CSRFToken': csrftoken,
+                'Content-Type': 'application/json',
+            },
+            credentials: 'same-origin'
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.status === 'success') {
+                // Show success message
+                const alertDiv = document.createElement('div');
+                alertDiv.className = 'alert alert-success alert-dismissible fade show';
+                alertDiv.innerHTML = `
+                    ${data.message}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                `;
+                document.querySelector('.card-body').insertBefore(alertDiv, document.querySelector('.d-flex'));
+                
+                // Replace the save button with a "Saved" badge
+                const saveButton = document.querySelector('button.btn-gradient');
+                const badge = document.createElement('span');
+                badge.className = 'badge bg-success';
+                badge.textContent = 'Saved';
+                saveButton.parentNode.replaceChild(badge, saveButton);
+            } else {
+                // Show error message
+                const alertDiv = document.createElement('div');
+                alertDiv.className = 'alert alert-danger alert-dismissible fade show';
+                alertDiv.innerHTML = `
+                    ${data.message}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                `;
+                document.querySelector('.card-body').insertBefore(alertDiv, document.querySelector('.d-flex'));
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            // Show error message
+            const alertDiv = document.createElement('div');
+            alertDiv.className = 'alert alert-danger alert-dismissible fade show';
+            alertDiv.innerHTML = `
+                Error saving trip. Please try again.
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            `;
+            document.querySelector('.card-body').insertBefore(alertDiv, document.querySelector('.d-flex'));
+        });
+    }
+
+    function postTrip() {
+        const csrftoken = getCookie('csrftoken');
+        
+        fetch('{% url "trips:post_trip" trip.id %}', {
+            method: 'POST',
+            headers: {
+                'X-CSRFToken': csrftoken,
+                'Content-Type': 'application/json',
+            },
+            credentials: 'same-origin'
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.status === 'success') {
+                // Show success message
+                const alertDiv = document.createElement('div');
+                alertDiv.className = 'alert alert-success alert-dismissible fade show';
+                alertDiv.innerHTML = `
+                    ${data.message}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                `;
+                document.querySelector('.card-body').insertBefore(alertDiv, document.querySelector('.d-flex'));
+                
+                // Replace the post button with a "Posted" badge
+                const postButton = document.querySelector('button.btn-gradient-secondary');
+                const badge = document.createElement('span');
+                badge.className = 'badge bg-info';
+                badge.textContent = 'Posted';
+                postButton.parentNode.replaceChild(badge, postButton);
+            } else {
+                // Show error message
+                const alertDiv = document.createElement('div');
+                alertDiv.className = 'alert alert-danger alert-dismissible fade show';
+                alertDiv.innerHTML = `
+                    ${data.message}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                `;
+                document.querySelector('.card-body').insertBefore(alertDiv, document.querySelector('.d-flex'));
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            // Show error message
+            const alertDiv = document.createElement('div');
+            alertDiv.className = 'alert alert-danger alert-dismissible fade show';
+            alertDiv.innerHTML = `
+                Error posting trip. Please try again.
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            `;
+            document.querySelector('.card-body').insertBefore(alertDiv, document.querySelector('.d-flex'));
+        });
+    }
+
+    function createStars(rating) {
+        let stars = '';
+        for (let i = 1; i <= 5; i++) {
+            if (i <= rating) {
+                stars += '<i class="fas fa-star text-warning"></i>';
+            } else {
+                stars += '<i class="far fa-star text-warning"></i>';
+            }
+        }
+        return stars;
+    }
+
+    function loadRatings() {
+        fetch('{% url "trips:get_trip_ratings" trip.id %}')
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === 'success') {
+                    const ratingsList = document.getElementById('ratings-list');
+                    ratingsList.innerHTML = '';
+
+                    data.ratings.forEach(rating => {
+                        const ratingHtml = `
+                            <div class="border-bottom mb-3 pb-3">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <div class="rating-stars">
+                                            ${createStars(rating.rating)}
+                                        </div>
+                                        <small class="text-muted">by ${rating.user}</small>
+                                    </div>
+                                    <small class="text-muted">${rating.created_at}</small>
+                                </div>
+                                ${rating.comment ? `<p class="mt-2 mb-0">${rating.comment}</p>` : ''}
+                            </div>
+                        `;
+                        ratingsList.innerHTML += ratingHtml;
+                    });
+
+                    // Update rating stats
+                    document.getElementById('rating-stats').textContent = 
+                        `(${data.total_ratings} ratings, ${data.average_rating} average)`;
+                }
+            })
+            .catch(error => console.error('Error loading ratings:', error));
+    }
+
+    const ratingForm = document.getElementById('rating-form');
+    if (ratingForm) {
+        ratingForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const formData = new FormData(this);
+            const csrftoken = getCookie('csrftoken');
+
+            fetch('{% url "trips:rate_trip" trip.id %}', {
+                method: 'POST',
+                headers: {
+                    'X-CSRFToken': csrftoken,
+                },
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === 'success') {
+                    // Show success message
+                    const alertDiv = document.createElement('div');
+                    alertDiv.className = 'alert alert-success alert-dismissible fade show';
+                    alertDiv.innerHTML = `
+                        ${data.message}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    `;
+                    ratingForm.insertAdjacentElement('beforebegin', alertDiv);
+                    
+                    // Reset form
+                    ratingForm.reset();
+                    
+                    // Reload ratings
+                    loadRatings();
+                } else {
+                    // Show error message
+                    const alertDiv = document.createElement('div');
+                    alertDiv.className = 'alert alert-danger alert-dismissible fade show';
+                    alertDiv.innerHTML = `
+                        ${data.message}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    `;
+                    ratingForm.insertAdjacentElement('beforebegin', alertDiv);
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                const alertDiv = document.createElement('div');
+                alertDiv.className = 'alert alert-danger alert-dismissible fade show';
+                alertDiv.innerHTML = `
+                    Error submitting rating. Please try again.
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                `;
+                ratingForm.insertAdjacentElement('beforebegin', alertDiv);
+            });
+        });
+    }
+
+    // Load ratings when the page loads
+    loadRatings();
+</script>
+{% endblock %} 

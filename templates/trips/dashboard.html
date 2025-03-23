@@ -1,0 +1,177 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container">
+    <div class="row">
+        <!-- User Profile Card -->
+        <div class="col-md-4 mb-4">
+            <div class="card">
+                <div class="card-body">
+                    <div class="text-center mb-4">
+                        {% if user.profile.avatar %}
+                            <img src="{{ user.profile.avatar.url }}" alt="Profile Picture" class="rounded-circle mb-3" style="width: 150px; height: 150px; object-fit: cover;">
+                        {% else %}
+                            <div class="default-avatar mb-3">
+                                <i class="fas fa-user"></i>
+                            </div>
+                        {% endif %}
+                        <h3 class="card-title text-white">{{ user.username }}</h3>
+                        <p class="text-muted">{{ user.email }}</p>
+                    </div>
+                    <div class="user-info">
+                        {% if user.profile.bio %}
+                            <p><strong class="text-white">Bio:</strong> {{ user.profile.bio }}</p>
+                        {% endif %}
+                        {% if user.profile.location %}
+                            <p><strong class="text-white">Location:</strong> {{ user.profile.location }}</p>
+                        {% endif %}
+                        {% if user.profile.birth_date %}
+                            <p><strong class="text-white">Birth Date:</strong> {{ user.profile.birth_date }}</p>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Posted Trips Section -->
+        <div class="col-md-8">
+            <div class="card mb-4">
+                <div class="card-body">
+                    <h3 class="card-title text-white mb-4">My Posted Trips</h3>
+                    {% if posted_trips %}
+                        <div class="row">
+                            {% for trip in posted_trips %}
+                                <div class="col-md-6 mb-4">
+                                    <div class="trip-card">
+                                        <div class="trip-info">
+                                            <h4 class="text-white">{{ trip.destination }}</h4>
+                                            <p class="text-muted mb-2">{{ trip.start_date|date:"M d, Y" }} - {{ trip.end_date|date:"M d, Y" }}</p>
+                                            <p class="mb-2"><strong class="text-white">Trip Type:</strong> {{ trip.trip_type }}</p>
+                                            <p class="mb-2"><strong class="text-white">People:</strong> {{ trip.number_of_people }}</p>
+                                            <div class="rating mb-3">
+                                                {% for i in "12345"|make_list %}
+                                                    {% if forloop.counter <= trip.average_rating %}
+                                                        <i class="fas fa-star text-warning"></i>
+                                                    {% else %}
+                                                        <i class="far fa-star text-warning"></i>
+                                                    {% endif %}
+                                                {% endfor %}
+                                                <span class="text-muted ms-2">({{ trip.ratings.count }})</span>
+                                            </div>
+                                            <a href="{% url 'trips:view_trip' trip.id %}" class="btn btn-primary btn-sm">View Details</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <p class="text-muted">You haven't posted any trips yet.</p>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- How It Works Section -->
+            <div class="card">
+                <div class="card-body">
+                    <h3 class="card-title text-white mb-4">How It Works</h3>
+                    <div class="row">
+                        <div class="col-md-4 text-center mb-4">
+                            <div class="step-icon mb-3">
+                                <i class="fas fa-map-marked-alt"></i>
+                            </div>
+                            <h5 class="text-white">Plan Your Trip</h5>
+                            <p class="text-muted">Use our AI to create your perfect itinerary</p>
+                        </div>
+                        <div class="col-md-4 text-center mb-4">
+                            <div class="step-icon mb-3">
+                                <i class="fas fa-share-alt"></i>
+                            </div>
+                            <h5 class="text-white">Share Experience</h5>
+                            <p class="text-muted">Post your trip and help others explore</p>
+                        </div>
+                        <div class="col-md-4 text-center mb-4">
+                            <div class="step-icon mb-3">
+                                <i class="fas fa-heart"></i>
+                            </div>
+                            <h5 class="text-white">Save Favorites</h5>
+                            <p class="text-muted">Bookmark trips you'd like to try</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .card {
+        background: rgba(255, 255, 255, 0.1);
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        margin-bottom: 1rem;
+    }
+
+    .default-avatar {
+        width: 150px;
+        height: 150px;
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto;
+    }
+
+    .default-avatar i {
+        font-size: 4rem;
+        color: rgba(255, 255, 255, 0.5);
+    }
+
+    .trip-card {
+        background: rgba(255, 255, 255, 0.05);
+        border-radius: 10px;
+        padding: 1.5rem;
+        height: 100%;
+        transition: transform 0.3s ease;
+    }
+
+    .trip-card:hover {
+        transform: translateY(-5px);
+        background: rgba(255, 255, 255, 0.1);
+    }
+
+    .step-icon {
+        width: 60px;
+        height: 60px;
+        background: rgba(101, 45, 144, 0.2);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto;
+    }
+
+    .step-icon i {
+        font-size: 1.5rem;
+        color: #652D90;
+    }
+
+    .text-white {
+        color: white !important;
+    }
+
+    .text-muted {
+        color: rgba(255, 255, 255, 0.6) !important;
+    }
+
+    .btn-primary {
+        background-color: #652D90;
+        border-color: #652D90;
+    }
+
+    .btn-primary:hover {
+        background-color: #4a2169;
+        border-color: #4a2169;
+    }
+</style>
+{% endblock %} 

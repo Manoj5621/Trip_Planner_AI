@@ -1,0 +1,200 @@
+{% extends "base.html" %}
+
+{% block content %}
+<!-- Hero Section -->
+<div class="hero-section text-center mb-5">
+    <h1 class="display-2 mb-3">Plan Your Perfect Trip with AI</h1>
+    <p class="lead mb-4">Discover, Explore, and Enjoy – Your Dream Vacation Starts Here!</p>
+    <a href="{% url 'trips:plan_trip' %}" class="btn btn-primary btn-lg glow-button mb-5">Get Started</a>
+</div>
+
+<!-- Activity Cards Section -->
+<div class="activity-cards">
+    <div class="row justify-content-center">
+        <div class="col-md-3">
+            <div class="activity-card">
+                <div class="icon-circle">
+                    <i class="fas fa-utensils"></i>
+                </div>
+                <h3>Food</h3>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="activity-card">
+                <div class="icon-circle">
+                    <i class="fas fa-landmark"></i>
+                </div>
+                <h3>Museum</h3>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="activity-card">
+                <div class="icon-circle">
+                    <i class="fas fa-hiking"></i>
+                </div>
+                <h3>Adventure</h3>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="activity-card">
+                <div class="icon-circle">
+                    <i class="fas fa-umbrella-beach"></i>
+                </div>
+                <h3>Beach</h3>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Recent Shared Trips Section -->
+<div class="recent-trips mt-5">
+    <h2 class="text-center mb-4">Recent Shared Trips</h2>
+    <div class="row">
+        {% for trip in recent_trips %}
+        <div class="col-md-4 mb-4">
+            <div class="trip-card">
+                <h3 class="trip-title">{{ trip.destination }}</h3>
+                <p class="trip-from">From: {{ trip.origin }}</p>
+                <p class="trip-dates">{{ trip.start_date|date:"M d, Y" }} - {{ trip.end_date|date:"M d, Y" }}</p>
+                <p class="trip-posted">Posted by: {{ trip.user.email }}</p>
+                <div class="d-flex justify-content-between align-items-center">
+                    <div class="rating">
+                        {% if trip.average_rating %}
+                            <span class="text-warning">★</span> {{ trip.average_rating|floatformat:1 }}
+                        {% else %}
+                            No ratings yet
+                        {% endif %}
+                    </div>
+                    <a href="{% url 'trips:view_trip' trip.id %}" class="btn btn-outline-light view-details">VIEW DETAILS</a>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+<style>
+    .hero-section {
+        padding: 80px 0;
+        margin-top: -24px;
+    }
+    
+    .hero-section h1 {
+        font-weight: 600;
+        margin-bottom: 1rem;
+    }
+
+    .glow-button {
+        background: #652D90;
+        border: none;
+        padding: 15px 40px;
+        border-radius: 30px;
+        position: relative;
+        overflow: hidden;
+        transition: all 0.3s ease;
+        box-shadow: 0 0 20px rgba(101, 45, 144, 0.5);
+    }
+
+    .glow-button:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 0 30px rgba(101, 45, 144, 0.8);
+    }
+
+    .activity-cards {
+        margin-top: 50px;
+    }
+
+    .activity-card {
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 15px;
+        padding: 30px;
+        text-align: center;
+        backdrop-filter: blur(10px);
+        transition: all 0.3s ease;
+        cursor: pointer;
+    }
+
+    .activity-card:hover {
+        transform: translateY(-5px);
+        background: rgba(255, 255, 255, 0.15);
+    }
+
+    .icon-circle {
+        width: 80px;
+        height: 80px;
+        background: rgba(101, 45, 144, 0.3);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 20px;
+    }
+
+    .icon-circle i {
+        font-size: 32px;
+        color: white;
+    }
+
+    .activity-card h3 {
+        color: white;
+        font-size: 1.2rem;
+        margin: 0;
+    }
+
+    /* Recent Trips Styles */
+    .recent-trips {
+        padding: 40px 0;
+    }
+
+    .recent-trips h2 {
+        color: white;
+        font-weight: 600;
+    }
+
+    .trip-card {
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 15px;
+        padding: 25px;
+        backdrop-filter: blur(10px);
+        transition: all 0.3s ease;
+        height: 100%;
+    }
+
+    .trip-card:hover {
+        transform: translateY(-3px);
+        background: rgba(255, 255, 255, 0.15);
+    }
+
+    .trip-title {
+        color: white;
+        font-size: 1.5rem;
+        margin-bottom: 10px;
+    }
+
+    .trip-from, .trip-dates, .trip-posted {
+        color: rgba(255, 255, 255, 0.7);
+        margin-bottom: 8px;
+    }
+
+    .view-details {
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        color: white;
+        padding: 8px 20px;
+        border-radius: 5px;
+        transition: all 0.3s ease;
+        text-decoration: none;
+    }
+
+    .view-details:hover {
+        background: rgba(255, 255, 255, 0.1);
+        border-color: white;
+    }
+
+    .rating {
+        color: rgba(255, 255, 255, 0.7);
+    }
+</style>
+
+<!-- Add Font Awesome for icons -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+{% endblock %} 

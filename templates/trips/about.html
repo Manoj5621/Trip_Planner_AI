@@ -1,0 +1,158 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="about-page">
+    <!-- Hero Section -->
+    <div class="about-hero mb-5">
+        <h1 class="display-4 mb-4">About TravelAIgue</h1>
+        <p class="lead">Your AI-powered travel companion for creating perfect trip itineraries.</p>
+    </div>
+
+    <!-- Mission Section -->
+    <div class="about-section mb-5">
+        <div class="row">
+            <div class="col-md-6 mb-4">
+                <div class="glass-card">
+                    <h2>Our Mission</h2>
+                    <p>At TravelAIgue, we're revolutionizing the way people plan their travels. By combining artificial intelligence with human wanderlust, we create personalized travel experiences that cater to your unique preferences and interests.</p>
+                </div>
+            </div>
+            <div class="col-md-6 mb-4">
+                <div class="glass-card">
+                    <h2>Why Choose Us</h2>
+                    <p>Our AI-powered platform understands your travel style and preferences to suggest the perfect itinerary. Share your experiences with a community of fellow travelers and discover new destinations through their journeys.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Features Section -->
+    <div class="features-section mb-5">
+        <h2 class="text-center mb-4">What We Offer</h2>
+        <div class="row">
+            <div class="col-md-4 mb-4">
+                <div class="feature-card">
+                    <i class="fas fa-robot mb-3"></i>
+                    <h3>AI-Powered Planning</h3>
+                    <p>Intelligent itinerary creation based on your preferences, time, and budget.</p>
+                </div>
+            </div>
+            <div class="col-md-4 mb-4">
+                <div class="feature-card">
+                    <i class="fas fa-users mb-3"></i>
+                    <h3>Community Sharing</h3>
+                    <p>Share your trips and discover new destinations through other travelers' experiences.</p>
+                </div>
+            </div>
+            <div class="col-md-4 mb-4">
+                <div class="feature-card">
+                    <i class="fas fa-map-marked-alt mb-3"></i>
+                    <h3>Personalized Experience</h3>
+                    <p>Customized recommendations based on your travel history and preferences.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Team Section -->
+    <div class="team-section mb-5">
+        <h2 class="text-center mb-4">Meet Our Team</h2>
+        <div class="row justify-content-center">
+            <div class="col-md-4 mb-4">
+                <div class="team-card text-center">
+                    <div class="team-avatar mb-3">
+                        <i class="fas fa-user-circle"></i>
+                    </div>
+                    <h3>John Doe</h3>
+                    <p class="text-muted">Founder & CEO</p>
+                </div>
+            </div>
+            <div class="col-md-4 mb-4">
+                <div class="team-card text-center">
+                    <div class="team-avatar mb-3">
+                        <i class="fas fa-user-circle"></i>
+                    </div>
+                    <h3>Jane Smith</h3>
+                    <p class="text-muted">Lead Developer</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .about-page {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 2rem 1rem;
+    }
+
+    .about-hero {
+        text-align: center;
+        padding: 3rem 0;
+    }
+
+    .glass-card {
+        background: rgba(255, 255, 255, 0.1);
+        backdrop-filter: blur(10px);
+        border-radius: 15px;
+        padding: 2rem;
+        height: 100%;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        transition: transform 0.3s ease;
+    }
+
+    .glass-card:hover {
+        transform: translateY(-5px);
+    }
+
+    .feature-card {
+        background: rgba(255, 255, 255, 0.05);
+        border-radius: 15px;
+        padding: 2rem;
+        text-align: center;
+        height: 100%;
+        transition: transform 0.3s ease;
+    }
+
+    .feature-card:hover {
+        transform: translateY(-5px);
+        background: rgba(255, 255, 255, 0.1);
+    }
+
+    .feature-card i {
+        font-size: 2.5rem;
+        color: #652D90;
+    }
+
+    .team-card {
+        background: rgba(255, 255, 255, 0.05);
+        border-radius: 15px;
+        padding: 2rem;
+        transition: transform 0.3s ease;
+    }
+
+    .team-card:hover {
+        transform: translateY(-5px);
+        background: rgba(255, 255, 255, 0.1);
+    }
+
+    .team-avatar i {
+        font-size: 4rem;
+        color: #652D90;
+    }
+
+    h1, h2, h3 {
+        color: white;
+    }
+
+    p {
+        color: rgba(255, 255, 255, 0.8);
+    }
+
+    .lead {
+        font-size: 1.5rem;
+        font-weight: 300;
+    }
+</style>
+{% endblock %} 

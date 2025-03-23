@@ -1,0 +1,99 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<!-- Add Font Awesome CSS in the head -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+<div class="row">
+    <div class="col-md-12 mb-4">
+        <div class="explore-header">
+            <h1 class="text-center mb-4">Explore Trips</h1>
+            <p class="text-center lead">Discover amazing trips shared by our community</p>
+        </div>
+    </div>
+
+    {% if trips %}
+    <div class="row">
+        {% for trip in trips %}
+        <div class="col-md-4 mb-4">
+            <div class="trip-card">
+                <h3 class="trip-title">{{ trip.destination }}</h3>
+                <p class="trip-from">From: {{ trip.origin }}</p>
+                <p class="trip-dates">{{ trip.start_date|date:"M d, Y" }} - {{ trip.end_date|date:"M d, Y" }}</p>
+                <p class="trip-posted">Posted by: {{ trip.user.email }}</p>
+                <div class="d-flex justify-content-between align-items-center">
+                    <div class="rating">
+                        {% if trip.average_rating %}
+                            <span class="text-warning">★</span> {{ trip.average_rating|floatformat:1 }}
+                        {% else %}
+                            No ratings yet
+                        {% endif %}
+                    </div>
+                    <a href="{% url 'trips:view_trip' trip.id %}" class="btn btn-outline-light view-details">VIEW DETAILS</a>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="text-center">
+        <p class="lead">No trips have been shared yet.</p>
+        <a href="{% url 'trips:plan_trip' %}" class="btn btn-primary">Plan a Trip</a>
+    </div>
+    {% endif %}
+</div>
+
+<style>
+    .explore-header h1 {
+        color: white;
+        font-weight: 600;
+    }
+
+    .explore-header p {
+        color: rgba(255, 255, 255, 0.7);
+    }
+
+    .trip-card {
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 15px;
+        padding: 25px;
+        backdrop-filter: blur(10px);
+        transition: all 0.3s ease;
+        height: 100%;
+    }
+
+    .trip-card:hover {
+        transform: translateY(-3px);
+        background: rgba(255, 255, 255, 0.15);
+    }
+
+    .trip-title {
+        color: white;
+        font-size: 1.5rem;
+        margin-bottom: 10px;
+    }
+
+    .trip-from, .trip-dates, .trip-posted {
+        color: rgba(255, 255, 255, 0.7);
+        margin-bottom: 8px;
+    }
+
+    .view-details {
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        color: white;
+        padding: 8px 20px;
+        border-radius: 5px;
+        transition: all 0.3s ease;
+        text-decoration: none;
+    }
+
+    .view-details:hover {
+        background: rgba(255, 255, 255, 0.1);
+        border-color: white;
+    }
+
+    .rating {
+        color: rgba(255, 255, 255, 0.7);
+    }
+</style>
+{% endblock %} 

@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-12 mb-4">
+        <h2>Saved Trips</h2>
+    </div>
+
+    {% if trips %}
+        {% for trip in trips %}
+            <div class="col-md-6 mb-4">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <h3 class="card-title">{{ trip.destination }}</h3>
+                        <div class="mb-3">
+                            <p><strong>Start Location:</strong> {{ trip.start_location }}</p>
+                            <p><strong>Dates:</strong> {{ trip.start_date }} - {{ trip.end_date }}</p>
+                            <p><strong>Trip Type:</strong> {{ trip.get_trip_type_display }}</p>
+                            <p><strong>Number of People:</strong> {{ trip.number_of_people }}</p>
+                        </div>
+                        <div class="d-grid">
+                            <a href="{% url 'trips:view_trip' trip.id %}" class="btn btn-primary">View Details</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    {% else %}
+        <div class="col-md-12">
+            <div class="alert alert-info">
+                You haven't saved any trips yet. <a href="{% url 'trips:plan_trip' %}">Plan a new trip</a> to get started!
+            </div>
+        </div>
+    {% endif %}
+</div>
+{% endblock %} 

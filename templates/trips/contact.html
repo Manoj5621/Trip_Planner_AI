@@ -1,0 +1,232 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="contact-page">
+    <!-- Hero Section -->
+    <div class="contact-hero text-center mb-5">
+        <h1 class="display-4 mb-4">Contact Us</h1>
+        <p class="lead">We'd love to hear from you! Share your thoughts, suggestions, or concerns.</p>
+    </div>
+
+    <!-- Contact Information -->
+    <div class="row mb-5">
+        <div class="col-md-6 mb-4">
+            <div class="glass-card">
+                <h2 class="mb-4">Get in Touch</h2>
+                <div class="contact-info">
+                    <div class="info-item mb-4">
+                        <i class="fas fa-envelope me-2"></i>
+                        <span>Email: support@travelaigue.com</span>
+                    </div>
+                    <div class="info-item mb-4">
+                        <i class="fas fa-phone me-2"></i>
+                        <span>Phone: +1 (555) 123-4567</span>
+                    </div>
+                    <div class="info-item">
+                        <i class="fas fa-map-marker-alt me-2"></i>
+                        <span>Location: New York, NY 10001</span>
+                    </div>
+                </div>
+                <div class="social-links mt-4">
+                    <a href="#" class="me-3"><i class="fab fa-facebook"></i></a>
+                    <a href="#" class="me-3"><i class="fab fa-twitter"></i></a>
+                    <a href="#" class="me-3"><i class="fab fa-instagram"></i></a>
+                    <a href="#"><i class="fab fa-linkedin"></i></a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6 mb-4">
+            <div class="glass-card">
+                <h2 class="mb-4">Send us a Message</h2>
+                <form method="post" class="feedback-form">
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        <label for="name" class="form-label">Name</label>
+                        <input type="text" class="form-control" id="name" name="name" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="email" class="form-label">Email</label>
+                        <input type="email" class="form-control" id="email" name="email" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="subject" class="form-label">Subject</label>
+                        <input type="text" class="form-control" id="subject" name="subject" required>
+                    </div>
+                    <div class="mb-4">
+                        <label for="message" class="form-label">Message</label>
+                        <textarea class="form-control" id="message" name="message" rows="5" required></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-primary w-100">Send Message</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- FAQ Section -->
+    <div class="faq-section mb-5">
+        <h2 class="text-center mb-4">Frequently Asked Questions</h2>
+        <div class="accordion" id="faqAccordion">
+            <div class="accordion-item glass-card mb-3">
+                <h2 class="accordion-header">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq1">
+                        How does the AI trip planning work?
+                    </button>
+                </h2>
+                <div id="faq1" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                    <div class="accordion-body">
+                        Our AI analyzes your preferences, budget, and travel style to create personalized itineraries. It considers factors like weather, local events, and popular attractions to suggest the best experiences for you.
+                    </div>
+                </div>
+            </div>
+            <div class="accordion-item glass-card mb-3">
+                <h2 class="accordion-header">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq2">
+                        Can I modify the AI-generated itinerary?
+                    </button>
+                </h2>
+                <div id="faq2" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                    <div class="accordion-body">
+                        Yes! You can customize any itinerary to your liking. Add or remove activities, adjust timings, and make it perfectly suited to your preferences.
+                    </div>
+                </div>
+            </div>
+            <div class="accordion-item glass-card">
+                <h2 class="accordion-header">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq3">
+                        How can I share my travel experiences?
+                    </button>
+                </h2>
+                <div id="faq3" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                    <div class="accordion-body">
+                        After your trip, you can easily share your itinerary, photos, and experiences with the TravelAIgue community. Rate places you visited and help other travelers plan their perfect trips!
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .contact-page {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 2rem 1rem;
+    }
+
+    .contact-hero {
+        padding: 3rem 0;
+    }
+
+    .glass-card {
+        background: rgba(255, 255, 255, 0.1);
+        backdrop-filter: blur(10px);
+        border-radius: 15px;
+        padding: 2rem;
+        height: 100%;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        transition: transform 0.3s ease;
+    }
+
+    .glass-card:hover {
+        transform: translateY(-5px);
+    }
+
+    .contact-info .info-item {
+        display: flex;
+        align-items: center;
+        color: rgba(255, 255, 255, 0.8);
+    }
+
+    .contact-info i {
+        font-size: 1.2rem;
+        color: #652D90;
+        width: 25px;
+    }
+
+    .social-links a {
+        color: rgba(255, 255, 255, 0.8);
+        font-size: 1.5rem;
+        transition: color 0.3s ease;
+    }
+
+    .social-links a:hover {
+        color: #652D90;
+    }
+
+    .form-control {
+        background: rgba(255, 255, 255, 0.1);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        color: white;
+    }
+
+    .form-control:focus {
+        background: rgba(255, 255, 255, 0.15);
+        border-color: #652D90;
+        color: white;
+        box-shadow: 0 0 0 0.25rem rgba(101, 45, 144, 0.25);
+    }
+
+    .form-control::placeholder {
+        color: rgba(255, 255, 255, 0.5);
+    }
+
+    .form-label {
+        color: rgba(255, 255, 255, 0.8);
+    }
+
+    .btn-primary {
+        background-color: #652D90;
+        border-color: #652D90;
+        transition: all 0.3s ease;
+    }
+
+    .btn-primary:hover {
+        background-color: #4a2169;
+        border-color: #4a2169;
+        transform: translateY(-2px);
+    }
+
+    /* Accordion Styles */
+    .accordion-item {
+        background: transparent;
+        border: none;
+    }
+
+    .accordion-button {
+        background: rgba(255, 255, 255, 0.1);
+        color: white;
+        border: none;
+        padding: 1.5rem;
+    }
+
+    .accordion-button:not(.collapsed) {
+        background: rgba(101, 45, 144, 0.2);
+        color: white;
+    }
+
+    .accordion-button:focus {
+        box-shadow: none;
+        border-color: rgba(255, 255, 255, 0.1);
+    }
+
+    .accordion-button::after {
+        filter: invert(1);
+    }
+
+    .accordion-body {
+        background: rgba(255, 255, 255, 0.05);
+        color: rgba(255, 255, 255, 0.8);
+        padding: 1.5rem;
+    }
+
+    h1, h2, h3 {
+        color: white;
+    }
+
+    .lead {
+        font-size: 1.5rem;
+        font-weight: 300;
+        color: rgba(255, 255, 255, 0.8);
+    }
+</style>
+{% endblock %} 
