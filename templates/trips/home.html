@@ -1,14 +1,13 @@
 {% extends "base.html" %}
 
 {% block content %}
-<!-- Hero Section -->
+
 <div class="hero-section text-center mb-5">
     <h1 class="display-2 mb-3">Plan Your Perfect Trip with AI</h1>
     <p class="lead mb-4">Discover, Explore, and Enjoy – Your Dream Vacation Starts Here!</p>
     <a href="{% url 'trips:plan_trip' %}" class="btn btn-primary btn-lg glow-button mb-5">Get Started</a>
 </div>
 
-<!-- Activity Cards Section -->
 <div class="activity-cards">
     <div class="row justify-content-center">
         <div class="col-md-3">
@@ -46,7 +45,6 @@
     </div>
 </div>
 
-<!-- Recent Shared Trips Section -->
 <div class="recent-trips mt-5">
     <h2 class="text-center mb-4">Recent Shared Trips</h2>
     <div class="row">
@@ -96,9 +94,9 @@
         display: flex;
         justify-content: center;
         align-items: center;
-        width: fit-content;  /* Ensures button wraps around the text */
-        margin: 0 auto;  /* Centers the button horizontally */
-        font-size: 18px; /* Adjust size */
+        width: fit-content; 
+        margin: 0 auto;  
+        font-size: 18px;
         font-weight: bold;
         color: white;
         cursor: pointer;
@@ -151,7 +149,6 @@
         margin: 0;
     }
 
-    /* Recent Trips Styles */
     .recent-trips {
         padding: 40px 0;
     }
@@ -205,6 +202,5 @@
     }
 </style>
 
-<!-- Add Font Awesome for icons -->
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
 {% endblock %} 

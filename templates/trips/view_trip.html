@@ -161,7 +161,6 @@
                 {% endif %}
 
                 <div id="ratings-list">
-                    <!-- Ratings will be loaded here -->
                 </div>
             </div>
         </div>
@@ -310,7 +309,7 @@
         .then(response => response.json())
         .then(data => {
             if (data.status === 'success') {
-                // Show success message
+                
                 const alertDiv = document.createElement('div');
                 alertDiv.className = 'alert alert-success alert-dismissible fade show';
                 alertDiv.innerHTML = `
@@ -319,14 +318,13 @@
                 `;
                 document.querySelector('.card-body').insertBefore(alertDiv, document.querySelector('.d-flex'));
                 
-                // Replace the save button with a "Saved" badge
                 const saveButton = document.querySelector('button.btn-gradient');
                 const badge = document.createElement('span');
                 badge.className = 'badge bg-success';
                 badge.textContent = 'Saved';
                 saveButton.parentNode.replaceChild(badge, saveButton);
             } else {
-                // Show error message
+               
                 const alertDiv = document.createElement('div');
                 alertDiv.className = 'alert alert-danger alert-dismissible fade show';
                 alertDiv.innerHTML = `
@@ -338,7 +336,7 @@
         })
         .catch(error => {
             console.error('Error:', error);
-            // Show error message
+            
             const alertDiv = document.createElement('div');
             alertDiv.className = 'alert alert-danger alert-dismissible fade show';
             alertDiv.innerHTML = `
@@ -363,7 +361,7 @@
         .then(response => response.json())
         .then(data => {
             if (data.status === 'success') {
-                // Show success message
+                
                 const alertDiv = document.createElement('div');
                 alertDiv.className = 'alert alert-success alert-dismissible fade show';
                 alertDiv.innerHTML = `
@@ -372,14 +370,13 @@
                 `;
                 document.querySelector('.card-body').insertBefore(alertDiv, document.querySelector('.d-flex'));
                 
-                // Replace the post button with a "Posted" badge
                 const postButton = document.querySelector('button.btn-gradient-secondary');
                 const badge = document.createElement('span');
                 badge.className = 'badge bg-info';
                 badge.textContent = 'Posted';
                 postButton.parentNode.replaceChild(badge, postButton);
             } else {
-                // Show error message
+                
                 const alertDiv = document.createElement('div');
                 alertDiv.className = 'alert alert-danger alert-dismissible fade show';
                 alertDiv.innerHTML = `
@@ -391,7 +388,7 @@
         })
         .catch(error => {
             console.error('Error:', error);
-            // Show error message
+            
             const alertDiv = document.createElement('div');
             alertDiv.className = 'alert alert-danger alert-dismissible fade show';
             alertDiv.innerHTML = `
@@ -440,7 +437,7 @@
                         ratingsList.innerHTML += ratingHtml;
                     });
 
-                    // Update rating stats
+                   
                     document.getElementById('rating-stats').textContent = 
                         `(${data.total_ratings} ratings, ${data.average_rating} average)`;
                 }
@@ -466,7 +463,7 @@
             .then(response => response.json())
             .then(data => {
                 if (data.status === 'success') {
-                    // Show success message
+                   
                     const alertDiv = document.createElement('div');
                     alertDiv.className = 'alert alert-success alert-dismissible fade show';
                     alertDiv.innerHTML = `
@@ -475,13 +472,12 @@
                     `;
                     ratingForm.insertAdjacentElement('beforebegin', alertDiv);
                     
-                    // Reset form
+                    
                     ratingForm.reset();
                     
-                    // Reload ratings
                     loadRatings();
                 } else {
-                    // Show error message
+                    
                     const alertDiv = document.createElement('div');
                     alertDiv.className = 'alert alert-danger alert-dismissible fade show';
                     alertDiv.innerHTML = `
@@ -504,7 +500,6 @@
         });
     }
 
-    // Load ratings when the page loads
     loadRatings();
 </script>
 {% endblock %} 

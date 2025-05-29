@@ -16,7 +16,7 @@ class AITripPlanner:
                 raise ValidationError("Google API key not found in environment variables")
             try:
                 genai.configure(api_key=api_key)
-                # Configure the model with safety settings
+                
                 generation_config = {
                     "temperature": 0.9,
                     "top_p": 1,
@@ -30,14 +30,14 @@ class AITripPlanner:
                     {"category": "HARM_CATEGORY_DANGEROUS_CONTENT", "threshold": "BLOCK_MEDIUM_AND_ABOVE"},
                 ]
 
-                # Initialize the model with gemini-1.5-flash
+                
                 self.model = genai.GenerativeModel(
                     model_name="gemini-1.5-flash",
                     generation_config=generation_config,
                     safety_settings=safety_settings
                 )
                 
-                # Test the configuration with a simple prompt
+                
                 response = self.model.generate_content("Hello")
                 if not response:
                     raise ValidationError("Could not initialize Google AI model")
@@ -88,12 +88,9 @@ Format the response as a JSON object with the following structure:
     def _parse_ai_response(self, response_text):
         """Parse the AI response and ensure it's in the correct format"""
         try:
-            # Try to parse the response as JSON
             if isinstance(response_text, dict):
                 return response_text
             
-            # If it's a string, try to extract JSON from it
-            # Sometimes AI might include explanatory text before/after the JSON
             response_text = response_text.strip()
             start_idx = response_text.find('{')
             end_idx = response_text.rfind('}') + 1
@@ -104,7 +101,7 @@ Format the response as a JSON object with the following structure:
             raise ValueError("Could not find valid JSON in response")
             
         except Exception as e:
-            # If parsing fails, return an error message in the expected format
+            
             return {
                 "day_1": {
                     "morning": {
