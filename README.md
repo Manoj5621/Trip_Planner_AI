@@ -1,7 +1,7 @@
-<img src="{% static 'images/logos.png' %}" alt="" align="center" width="225" height="150"><h1 align="center">Travelogue - AI</h1>
+<img src="static/images/logos.png" alt="" align="center" width="225" height="150"><h1 align="center">Travelogue - AI</h1>
 <p align="center"><a href="#project-description">Project Description</a> - <a href="#key-features">Key Features</a> - <a href="#technology-stack">Tech Stack</a></p>
 
-<img src="{% static 'images/landingpage.png' %}" alt="" align="center" width="auto" height="auto">
+<img src="static/images/landingpage.png" alt="" align="center" width="auto" height="auto">
 
 ## Project Description
 
