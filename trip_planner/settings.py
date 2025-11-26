@@ -132,6 +132,8 @@ ACCOUNT_DEFAULT_HTTP_PROTOCOL = 'http'  # Change to 'https' in production
 ACCOUNT_SESSION_REMEMBER = True
 ACCOUNT_EMAIL_SUBJECT_PREFIX = '[AI Trip Planner] '
 ACCOUNT_LOGIN_METHODS = {'email'}
+ACCOUNT_USER_MODEL_USERNAME_FIELD = None
+ACCOUNT_SIGNUP_FIELDS = ['email', 'password1', 'password2']
 
 # Login/Logout URLs
 LOGIN_URL = 'account_login'
