@@ -5,6 +5,10 @@ from django.core.validators import MinValueValidator, MaxValueValidator
 from django.db.models import Avg
 from django.db.models.signals import post_save
 from django.dispatch import receiver
+from trips.mongodb_adapter import mongo_adapter
+import logging
+
+logger = logging.getLogger(__name__)
 
 class CustomUserManager(BaseUserManager):
     def create_user(self, email, password=None, **extra_fields):
@@ -34,6 +38,32 @@ class User(AbstractUser):
 
     def __str__(self):
         return self.email
+    
+    def save(self, *args, **kwargs):
+        """Save user to both SQLite and MongoDB"""
+        try:
+            super().save(*args, **kwargs)
+            if mongo_adapter is not None:
+                collection = mongo_adapter.db['auth_user']
+                user_data = {
+                    'email': self.email,
+                    'password': self.password,
+                    'first_name': self.first_name,
+                    'last_name': self.last_name,
+                    'is_active': self.is_active,
+                    'is_staff': self.is_staff,
+                    'is_superuser': self.is_superuser,
+                    'date_joined': self.date_joined,
+                    'last_login': self.last_login,
+                }
+                existing = collection.find_one({'email': self.email})
+                if existing:
+                    collection.update_one({'email': self.email}, {'$set': user_data})
+                else:
+                    collection.insert_one(user_data)
+                logger.info(f"✅ User '{self.email}' synced to MongoDB")
+        except Exception as e:
+            logger.error(f"❌ Error saving user: {str(e)}")
 
 class Trip(models.Model):
     TRIP_TYPES = [
@@ -66,6 +96,36 @@ class Trip(models.Model):
 
     def __str__(self):
         return f"{self.destination} Trip ({self.start_date} - {self.end_date})"
+    
+    def save(self, *args, **kwargs):
+        """Save trip to both SQLite and MongoDB"""
+        try:
+            super().save(*args, **kwargs)
+            if mongo_adapter is not None:
+                collection = mongo_adapter.db['trips_trip']
+                trip_data = {
+                    'user_id': str(self.user.id) if self.user else None,
+                    'destination': self.destination,
+                    'start_location': self.start_location,
+                    'start_date': self.start_date,
+                    'end_date': self.end_date,
+                    'interested_activities': self.interested_activities,
+                    'trip_type': self.trip_type,
+                    'number_of_people': self.number_of_people,
+                    'trip_plan': self.trip_plan,
+                    'is_saved': self.is_saved,
+                    'is_posted': self.is_posted,
+                    'posted_at': self.posted_at,
+                    'created_at': self.created_at,
+                }
+                existing = collection.find_one({'destination': self.destination, 'user_id': str(self.user.id)})
+                if existing:
+                    collection.update_one({'_id': existing['_id']}, {'$set': trip_data})
+                else:
+                    collection.insert_one(trip_data)
+                logger.info(f"✅ Trip '{self.destination}' synced to MongoDB")
+        except Exception as e:
+            logger.error(f"❌ Error saving trip: {str(e)}")
 
 class Rating(models.Model):
     trip = models.ForeignKey(Trip, on_delete=models.CASCADE, related_name='ratings')
@@ -80,10 +140,32 @@ class Rating(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
-        unique_together = ('trip', 'user')  # Each user can rate a trip only once
+        unique_together = ('trip', 'user')
 
     def __str__(self):
         return f"{self.user.email}'s {self.rating}-star rating for {self.trip.destination} Trip"
+    
+    def save(self, *args, **kwargs):
+        """Save rating to both SQLite and MongoDB"""
+        try:
+            super().save(*args, **kwargs)
+            if mongo_adapter is not None:
+                collection = mongo_adapter.db['trips_rating']
+                rating_data = {
+                    'trip_id': str(self.trip.id) if self.trip else None,
+                    'user_id': str(self.user.id) if self.user else None,
+                    'rating': self.rating,
+                    'comment': self.comment,
+                    'created_at': self.created_at,
+                }
+                existing = collection.find_one({'trip_id': str(self.trip.id), 'user_id': str(self.user.id)})
+                if existing:
+                    collection.update_one({'_id': existing['_id']}, {'$set': rating_data})
+                else:
+                    collection.insert_one(rating_data)
+                logger.info(f"✅ Rating synced to MongoDB")
+        except Exception as e:
+            logger.error(f"❌ Error saving rating: {str(e)}")
 
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
@@ -96,6 +178,30 @@ class Profile(models.Model):
 
     def __str__(self):
         return f"{self.user.email}'s Profile"
+    
+    def save(self, *args, **kwargs):
+        """Save profile to both SQLite and MongoDB"""
+        try:
+            super().save(*args, **kwargs)
+            if mongo_adapter is not None:
+                collection = mongo_adapter.db['trips_profile']
+                profile_data = {
+                    'user_id': str(self.user.id) if self.user else None,
+                    'avatar': str(self.avatar) if self.avatar else None,
+                    'bio': self.bio,
+                    'location': self.location,
+                    'birth_date': self.birth_date,
+                    'created_at': self.created_at,
+                    'updated_at': self.updated_at,
+                }
+                existing = collection.find_one({'user_id': str(self.user.id)})
+                if existing:
+                    collection.update_one({'_id': existing['_id']}, {'$set': profile_data})
+                else:
+                    collection.insert_one(profile_data)
+                logger.info(f"✅ Profile synced to MongoDB")
+        except Exception as e:
+            logger.error(f"❌ Error saving profile: {str(e)}")
 
 @receiver(post_save, sender=User)
 def create_user_profile(sender, instance, created, **kwargs):
@@ -104,4 +210,4 @@ def create_user_profile(sender, instance, created, **kwargs):
 
 @receiver(post_save, sender=User)
 def save_user_profile(sender, instance, **kwargs):
-    instance.profile.save() 
+    instance.profile.save()
