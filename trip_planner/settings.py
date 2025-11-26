@@ -76,6 +76,19 @@ DATABASES = {
     }
 }
 
+# MongoDB Configuration
+MONGODB_URI = os.getenv('MONGO_URI')
+MONGODB_NAME = os.getenv('MONGO_NAME', 'Trip_Planner_AI')
+
+# MongoDB Connection for direct use (when needed)
+if MONGODB_URI:
+    from pymongo import MongoClient
+    MONGO_CLIENT = MongoClient(MONGODB_URI)
+    MONGO_DB = MONGO_CLIENT[MONGODB_NAME]
+else:
+    MONGO_CLIENT = None
+    MONGO_DB = None
+
 AUTH_PASSWORD_VALIDATORS = [
     {
         'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
