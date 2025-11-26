@@ -22,6 +22,7 @@ staticfiles/
 .idea/
 *.sublime-project
 *.sublime-workspace
+__pycache__/
 
 # OS files
 .DS_Store
@@ -39,3 +40,53 @@ htmlcov/
 
 # Jupyter Notebook checkpoints
 .ipynb_checkpoints/
+
+# Python dependencies
+dist/
+build/
+*.egg-info/
+.eggs/
+
+# API keys and secrets (CRITICAL - never commit these)
+.env
+.env.local
+.env.*.local
+*.pem
+*.key
+
+# Database backups
+*.sqlite3-backup
+*.db
+
+# IDE temporary files
+*.swp
+*.swo
+*~
+.DS_Store/
+
+# Node/npm (if using frontend tools)
+node_modules/
+npm-debug.log
+yarn-error.log
+
+# AI/ML model cache
+__pycache__/
+*.pyc
+.cache/
+
+# OS-specific
+.venv
+.Python
+bin/
+lib/
+include/
+
+# Temporary files
+*.tmp
+*.temp
+*.bak
+
+# Static and media files (if uploaded locally during dev)
+/staticfiles/
+/media/
+
