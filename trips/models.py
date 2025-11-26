@@ -107,16 +107,16 @@ class Trip(models.Model):
                     'user_id': str(self.user.id) if self.user else None,
                     'destination': self.destination,
                     'start_location': self.start_location,
-                    'start_date': self.start_date,
-                    'end_date': self.end_date,
+                    'start_date': self.start_date.isoformat() if self.start_date else None,
+                    'end_date': self.end_date.isoformat() if self.end_date else None,
                     'interested_activities': self.interested_activities,
                     'trip_type': self.trip_type,
                     'number_of_people': self.number_of_people,
                     'trip_plan': self.trip_plan,
                     'is_saved': self.is_saved,
                     'is_posted': self.is_posted,
-                    'posted_at': self.posted_at,
-                    'created_at': self.created_at,
+                    'posted_at': self.posted_at.isoformat() if self.posted_at else None,
+                    'created_at': self.created_at.isoformat() if self.created_at else None,
                 }
                 existing = collection.find_one({'destination': self.destination, 'user_id': str(self.user.id)})
                 if existing:
@@ -190,9 +190,9 @@ class Profile(models.Model):
                     'avatar': str(self.avatar) if self.avatar else None,
                     'bio': self.bio,
                     'location': self.location,
-                    'birth_date': self.birth_date,
-                    'created_at': self.created_at,
-                    'updated_at': self.updated_at,
+                    'birth_date': self.birth_date.isoformat() if self.birth_date else None,
+                    'created_at': self.created_at.isoformat() if self.created_at else None,
+                    'updated_at': self.updated_at.isoformat() if self.updated_at else None,
                 }
                 existing = collection.find_one({'user_id': str(self.user.id)})
                 if existing:
